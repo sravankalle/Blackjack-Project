@@ -3,6 +3,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Random;
 import java.awt.event.*;
+import java.io.File;
 
 public class GamePanel extends JPanel implements ActionListener{
     
@@ -33,11 +34,12 @@ public class GamePanel extends JPanel implements ActionListener{
     static int user_hit_cardY=380;
     static int dealer_hit_cardX=100;
     static int dealer_hit_cardY=200;
+    final String path = "C:/Users/srava/DocumentsJava Project/Blackjack-Project/Black Jack Game/images/PNG";
     public GamePanel()
     {
         this.setPreferredSize(new Dimension(SCREEN_WIDTH,SCREEN_HEIGHT));
         this.setFocusable(true);
-        backgroundImage= new ImageIcon("D://java online//Black Jack Game//images//PNG//bjtable.jpg").getImage();
+        backgroundImage= new ImageIcon(path + "/bjtable.jpg").getImage();
         // card_behind=new ImageIcon("D://java online//Black Jack Game//images//PNG//red_back.png").getImage();
         // card_behind_mod=card_behind.getScaledInstance(50, 76, java.awt.Image.SCALE_SMOOTH);
         hit=new JButton("Hit");
@@ -55,7 +57,8 @@ public class GamePanel extends JPanel implements ActionListener{
     
     public void startGame()
     {
-        dealer_cards[dealer_card_count]=(new ImageIcon("D://java online//Black Jack Game//images//PNG//red_back.png").getImage()).getScaledInstance(100, 152, java.awt.Image.SCALE_SMOOTH);
+        System.out.println("StartGame");
+        dealer_cards[dealer_card_count]=(new ImageIcon(path + "/red_back.png").getImage()).getScaledInstance(100, 152, java.awt.Image.SCALE_SMOOTH);
         dealer_card_count++;
         dealer_hit_card();
         for(int i=0;i<2;i++)
@@ -80,12 +83,13 @@ public class GamePanel extends JPanel implements ActionListener{
         }
         dealer_hit_cardX=100;
         user_hit_cardX=100;
+       
     }
     public void dealer_hit_card()
     {
         cardIndex=random.nextInt(All_Cards.length);
         pickedCard=All_Cards[cardIndex];
-        dealer_cards[dealer_card_count]=(new ImageIcon("D://java online//Black Jack Game//images//PNG//"+pickedCard).getImage()).getScaledInstance(100, 152, java.awt.Image.SCALE_SMOOTH);
+        dealer_cards[dealer_card_count]=(new ImageIcon(path + "/"+  pickedCard).getImage()).getScaledInstance(100, 152, java.awt.Image.SCALE_SMOOTH);
         dealer_card_count++;
     }
     public void user_hit_card()
@@ -94,9 +98,13 @@ public class GamePanel extends JPanel implements ActionListener{
         pickedCard=All_Cards[cardIndex];
         System.out.println(pickedCard);
         user_card_value+=get_card_value();
-        user_cards[user_card_count]=(new ImageIcon("D://java online//Black Jack Game//images//PNG//"+pickedCard).getImage()).getScaledInstance(100, 152, java.awt.Image.SCALE_SMOOTH);
+        user_cards[user_card_count]=(new ImageIcon(path + "/" + pickedCard).getImage()).getScaledInstance(100, 152, java.awt.Image.SCALE_SMOOTH);
         user_card_count++;
+        /* printArray(user_cards); */
         System.out.println(user_card_value);
+    }
+    public void user_stand(){
+        System.out.println("Stand clicked");
     }
     public int get_card_value()
     {
@@ -116,18 +124,36 @@ public class GamePanel extends JPanel implements ActionListener{
             return val;
         }
     }
+    public void checkConditions(){
+        if(user_card_value > 21){
+            System.out.println("Game over!");
+        }
+        if(user_card_value == 21){
+            System.out.println("You win!");
+        }
+    }
     public void actionPerformed(ActionEvent ae)
     {
         String command=ae.getActionCommand();
         if(command=="Hit")
         {  
+            checkConditions();
             user_hit_card();
             repaint();
-        }
-        else if(command=="Start Game")
-        {
+        }else if(command == "Stand"){
+            checkConditions();
+            user_stand();
+        }else if(command=="Start Game"){
             startGame();
             repaint();
+        }
+    }
+
+    //Debug Methods
+
+    <T> void printArray(T[] arr){
+        for(int i = 0; i< arr.length; i++){
+            System.out.println(">>"  + arr[i]);
         }
     }
 }
