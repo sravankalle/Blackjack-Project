@@ -26,6 +26,7 @@ public class GamePanel extends JPanel implements ActionListener{
     int cardIndex;
     String pickedCard;
     int user_card_value;
+    int dealer_card_value;
     String All_Cards[]={"AH.png","2H.png","3H.png","4H.png","5H.png","6H.png","7H.png","8H.png","9H.png","10H.png","JH.png","QH.png","KH.png",
                         "AD.png","2D.png","3D.png","4D.png","5D.png","6D.png","7D.png","8D.png","9D.png","10D.png","JD.png","QD.png","KD.png",
                         "AC.png","2C.png","3C.png","4C.png","5C.png","6C.png","7C.png","8C.png","9C.png","10C.png","JC.png","QC.png","KC.png",
@@ -89,6 +90,7 @@ public class GamePanel extends JPanel implements ActionListener{
     {
         cardIndex=random.nextInt(All_Cards.length);
         pickedCard=All_Cards[cardIndex];
+        dealer_card_value+=get_card_value();
         dealer_cards[dealer_card_count]=(new ImageIcon(path + "/"+  pickedCard).getImage()).getScaledInstance(100, 152, java.awt.Image.SCALE_SMOOTH);
         dealer_card_count++;
     }
@@ -105,6 +107,23 @@ public class GamePanel extends JPanel implements ActionListener{
     }
     public void user_stand(){
         System.out.println("Stand clicked");
+        while(dealer_card_value < 17){
+            printValues();
+            dealer_hit_card();
+        }
+        if(dealer_card_value > user_card_value && dealer_card_value < 21){
+            printValues();
+            System.out.println("Dealer wins!");
+            System.exit(0);
+        }else if(dealer_card_value == user_card_value){
+            System.out.println("Tie!");
+            System.exit(0);
+        }else if((user_card_value > dealer_card_value && user_card_value < 21) || dealer_card_value > 21 ){
+            printValues();
+            System.out.println("User Wins!");
+            System.exit(0);
+        }
+
     }
     public int get_card_value()
     {
@@ -125,8 +144,10 @@ public class GamePanel extends JPanel implements ActionListener{
         }
     }
     public void checkConditions(){
+        System.out.println("checked");
         if(user_card_value > 21){
             System.out.println("Game over!");
+            System.exit(0);
         }
         if(user_card_value == 21){
             System.out.println("You win!");
@@ -137,13 +158,12 @@ public class GamePanel extends JPanel implements ActionListener{
         String command=ae.getActionCommand();
         if(command=="Hit")
         {  
-            checkConditions();
             user_hit_card();
             repaint();
-        }else if(command == "Stand"){
             checkConditions();
+        }else if(command == "Stand"){
             user_stand();
-        }else if(command=="Start Game"){
+        }else if(ae.getSource() == startgame){
             startGame();
             repaint();
         }
@@ -155,5 +175,9 @@ public class GamePanel extends JPanel implements ActionListener{
         for(int i = 0; i< arr.length; i++){
             System.out.println(">>"  + arr[i]);
         }
+    }
+
+    void printValues(){
+        System.out.println("user value: " + user_card_value + " dealer value: " + dealer_card_value);
     }
 }
